@@ -1,0 +1,10 @@
+---
+#source: defaults to the current directory
+dst: dell:Code/RsyncWorkarea/
+exclude:
+  - .mypy_cache
+  - .rsync
+run: 'ls -l'
+#run: 'ls -l'
+run_make: 'cd BLD && make x86'
+...
