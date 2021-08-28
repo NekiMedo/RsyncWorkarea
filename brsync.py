@@ -15,8 +15,8 @@ except ImportError:
 #  #source: defaults to the current directory
 #  dst: dell:Code/RsyncWorkarea/
 #  exclude:
-#  - .mypy_cache
-#  - .rsync
+#    - .mypy_cache
+#    - .rsync
 #  run: 'ls -l'
 #  run_make: 'cd BLD && make x86'
 #  ...
@@ -42,6 +42,7 @@ class  Rsync():
     def sync( self ):
         'Run rsync using settings from config file'
         self.command.extend( [self.src_dir, self.dst_dir] )
+        print( 'rsync: ', self.src_dir, '==>', self.dst_dir )
         cout = subprocess.Popen( self.command, stderr=subprocess.STDOUT, stdout=subprocess.PIPE )
         for line in cout.stdout:
             print( line.decode('utf-8' ), end='' )
@@ -89,6 +90,3 @@ rsync.sync()
 
 
 # vidi Bacikutija/Posal/Ali/bin_egm/bb_rsync.sh
-
-# FIXME trailing whitespace
-#
