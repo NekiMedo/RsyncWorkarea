@@ -13,7 +13,7 @@ except ImportError:
 # Sample config file (.rsync):
 #  ---
 #  #source: defaults to the current directory
-#  dst: dell:Code/RsyncWorkarea/
+#  dst: hostname:Code/RsyncWorkarea/
 #  exclude:
 #    - .mypy_cache
 #    - .rsync
@@ -24,18 +24,17 @@ except ImportError:
 class  Rsync():
     'Perform rsync between the CWD and the remote directory listed in the config file.'
     def __init__( self, fname ):
-        self.exclude = []
-        self.run_cmd = ''
+        self.exclude = []   # file paterns to exclude from copying
+        self.run_cmd = ''   # command to execute after copying
         self.command = [ 'rsync',   '--progress',  '--compress', '--recursive', '--times',
                          '--perms', '--links',     '--delete',   '--cvs-exclude' ]
-        self.src_dir = os.path.dirname( fname ) + '/'
+        self.src_dir = os.path.dirname( fname ) + os.sep
         # read configuration from the file
         with open( fname, 'rt' ) as infile:
             data = yaml.load( infile, Loader=Loader )
-            self.dst_dir = data[ 'dst' ]
+            self.dst_dir = data[ 'dst' ]   # too bad if 'dst' is not there - it's a bare minimum
             if 'exclude' in data:
-                for excl in data[ 'exclude' ]:
-                    self.command.append( '--exclude=' + excl )
+                self.command.extend( ['--exclude=' + excl for excl in data[ 'exclude' ]] )
             if 'run' in data:
                 self.run_cmd = data[ 'run' ]
 
@@ -56,6 +55,7 @@ class  Rsync():
         cout = subprocess.Popen( [ 'ssh', host, 'cd ' + remote_dir + ' && ' + self.run_cmd ], stderr=subprocess.STDOUT, stdout=subprocess.PIPE )
         for line in cout.stdout:
             print( line.decode('utf-8' ), end='' )
+
 
 def get_cmd_line_args():   # FIXME not used
     'Get command line arguments FIXME from Freecycle'
@@ -82,7 +82,6 @@ def get_config_file( cfg_fname ):
         if cwd == '/':
             print( "\nERROR: didn't find config file %s\nExiting" % cfg_fname )
             sys.exit( 1 )
-
 
 
 rsync = Rsync( get_config_file( '.rsync') )
