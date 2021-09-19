@@ -17,6 +17,7 @@ except ImportError:
 #  exclude:
 #    - .mypy_cache
 #    - .rsync
+#  delete: true
 #  run: 'ls -l'
 #  run_make: 'cd BLD && make x86'
 #  ...
@@ -27,7 +28,7 @@ class  Rsync():
         self.exclude = []   # file paterns to exclude from copying
         self.run_cmd = ''   # command to execute after copying
         self.command = [ 'rsync',   '--progress',  '--compress', '--recursive', '--times',
-                         '--perms', '--links',     '--delete',   '--cvs-exclude' ]
+                         '--perms', '--links',     '--cvs-exclude' ]
         self.src_dir = os.path.dirname( fname ) + os.sep
         # read configuration from the file
         with open( fname, 'rt' ) as infile:
@@ -35,6 +36,9 @@ class  Rsync():
             self.dst_dir = data[ 'dst' ]   # too bad if 'dst' is not there - it's a bare minimum
             if 'exclude' in data:
                 self.command.extend( ['--exclude=' + excl for excl in data[ 'exclude' ]] )
+            # delete remote files not found locally - only if configured so
+            if 'delete' in data and data[ 'delete' ] == True:
+                self.command.append( '--delete' )
             if 'run' in data:
                 self.run_cmd = data[ 'run' ]
 
