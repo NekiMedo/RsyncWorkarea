@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# FIXME check man 1 rdist
+
 import os
 import sys
 import yaml   # PyYAML: use pip3 to install it
@@ -23,21 +25,23 @@ except ImportError:
 #  ...
 
 class  Rsync():
-    'Perform rsync between the CWD and the remote directory listed in the config file.'
+    '''Perform rsync between the CWD and the remote directory listed in the
+    config file.'''
     def __init__( self, fname ):
         self.exclude = []   # file paterns to exclude from copying
         self.run_cmd = ''   # command to execute after copying
-        self.command = [ 'rsync',   '--progress',  '--compress', '--recursive', '--times',
-                         '--perms', '--links',     '--cvs-exclude' ]
+        self.command = [ 'rsync',   '--progress',  '--compress', '--recursive',
+                         '--times', '--perms', '--links',     '--cvs-exclude' ]
         self.src_dir = os.path.dirname( fname ) + os.sep
         # read configuration from the file
         with open( fname, 'rt' ) as infile:
             data = yaml.load( infile, Loader=Loader )
-            self.dst_dir = data[ 'dst' ]   # too bad if 'dst' is not there - it's a bare minimum
+            # it's user's responsibility to supply the 'dst' (it's a bare minimum)
+            self.dst_dir = data[ 'dst' ]
             if 'exclude' in data:
                 self.command.extend( ['--exclude=' + excl for excl in data[ 'exclude' ]] )
             # delete remote files not found locally - only if configured so
-            if 'delete' in data and data[ 'delete' ] == True:
+            if 'delete' in data and data[ 'delete' ]:
                 self.command.append( '--delete' )
             if 'run' in data:
                 self.run_cmd = data[ 'run' ]

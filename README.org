@@ -1,0 +1,14 @@
+* BRSYNC
+Using rsync copy the contents of a directory to a remote location.
+Attempt to simplify navigating arcane rsync arguments.
+Use .rsync file (Yaml) specification how to go about it.
+  - make sure:
+    - hostname is defined in /etc/hosts
+    -
+  - main development area: ~/proj/RsyncWorkarea/
+  - repository: https://github.com/NekiMedo/RsyncWorkarea
+
+* TODO
+ - [ ] add delete: true/false to config file + override hard coded --delete
+ - [ ] add MULTIPLE destinations
+   - [ ] pick one from command line argument (brsync hpmini)
