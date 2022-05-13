@@ -8,7 +8,16 @@ Use .rsync file (Yaml) specification how to go about it.
   - main development area: ~/proj/RsyncWorkarea/
   - repository: https://github.com/NekiMedo/RsyncWorkarea
 
+* SETUP / WHEEL
+#+BEGIN_SRC sh
+  $ python3 setup.py bdist_wheel
+  $ ls -l dist/*.whl
+  $ # on another box:
+  $ pip install brsync-0.0.1-py3-none-any.whl
+#+END_SRC
+
 * TODO
+ - [ ] Makefile: make clean ... rm -rf dist/ build/
  - [ ] add delete: true/false to config file + override hard coded --delete
  - [ ] add MULTIPLE destinations
    - [ ] pick one from command line argument (brsync hpmini)
